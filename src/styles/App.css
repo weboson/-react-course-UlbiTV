@@ -1,0 +1,26 @@
+/* Обнуление стилей браузера, которые по-умолчанию */
+*  {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* стили для #root из index.html */
+#root {
+    display: flex;
+    justify-content: center;
+}
+
+/* стили для .App из App.jsx */
+.App {
+    width: 800px;
+}
+
+.post {
+    display: flex;
+    padding: 15px;
+    border: 2px solid teal;
+    margin-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+}
