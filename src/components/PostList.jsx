@@ -1,6 +1,5 @@
 import React from 'react';
 import PostItem from './PostItem';
-//! ключи
 
 //                props = {posts={[...]}}
 const PostList = ({posts, title}) => { // так как props - это объект - то вместо (props) использовали "диструктуризацию" и сразу вытащили массив "posts"
@@ -8,7 +7,7 @@ const PostList = ({posts, title}) => { // так как props - это объе�
         <div>
             <h1 style={{ textAlign: 'center' }}>{title}</h1>
             {
-                                                    //! ключи - key  
+                                                    // ключи - key  
                 posts.map(post => <PostItem post={post} key={post.id} />)
             }
         </div>
