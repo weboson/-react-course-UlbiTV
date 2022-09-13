@@ -15,9 +15,9 @@ function App() {
 
   // состояние хранит в себе массив posts2 для списка №2
   const [posts2, setPosts2] = useState([
-    {id: 1, title: 'Python 1', body: 'Description'},
-    {id: 2, title: 'Python 2', body: 'Description'},
-    {id: 3, title: 'Python 3', body: 'Description'},
+    {id: 4, title: 'Python 1', body: 'Description'},
+    {id: 5, title: 'Python 2', body: 'Description'},
+    {id: 6, title: 'Python 3', body: 'Description'},
   ])
 
 
