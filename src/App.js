@@ -19,7 +19,7 @@ function App() {
       <form>
         <input type="text" placeholder="Заголовок поста"/>
         <input type="text" placeholder="Описание поста"/>
-        <MyButton>Создать пост</MyButton>
+        <MyButton disabled>Создать пост</MyButton>
       </form>
       <PostList posts={posts} title="Посты про javaScript"/>
     </div>
