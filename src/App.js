@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import PostList from './components/PostList';
+import MyButton from './components/UI/button/MyButton';
 
-// import styles
 import './styles/App.css';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
       <form>
         <input type="text" placeholder="Заголовок поста"/>
         <input type="text" placeholder="Описание поста"/>
-        <button>Создать пост</button>
+        <MyButton>Создать пост</MyButton>
       </form>
       <PostList posts={posts} title="Посты про javaScript"/>
     </div>
