@@ -1,10 +1,11 @@
 import React from 'react';
 import classes from './MyInput.module.css'
 
-const MyInput = (props) => {
+//! React.forwardRef((props, ref) => (<button ref={ref}/>)) - перенаправляет ref={useRef} в необходимое место СОБСТВЕННОГО компонента
+ const MyInput = React.forwardRef((props, ref) => {
     return (
-        <input {...props} className={classes.myInput} />
+        <input ref={ref} {...props} className={classes.myInput} />
     );
-};
+});
 
 export default MyInput;

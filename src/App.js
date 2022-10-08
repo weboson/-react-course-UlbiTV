@@ -30,10 +30,10 @@ function App() {
   const addNewPost = (e) => { // можно как стрелочную, так и декларативную  функцию (function F() {}) - не важно  
     e.preventDefault() // сброс действия браузера на событие (отправки (кнопка отпавить или Enter) данных в форме)? которые были по-умолчанию у браузера
     console.log(title);
-    //! берем из useref - значение атрибута value элемента input
-    console.log(bodyInputRef.current.value);
-    //! либо сам эелмент
+    //!чтобы получить элемент нужно обратится к свойству "current"
     console.log(bodyInputRef.current);
+    //! либо, чтобы получить любой атрибут элемента - обратится к соответствующему свойству объекта "current"
+    console.log(bodyInputRef.current.value);
   }
 
   return (
@@ -46,11 +46,12 @@ function App() {
           type="text" 
           placeholder="Заголовок поста"
         />
-        {/* НЕ УПРАВЛЯЕМЫЙ/НЕ КОНТРОЛИРУЕМЫЙ КОМПОНЕТ (с помощью useRef) */}
-        {/*! привязываем наш ref к элементу*/}
-        <input ref={bodyInputRef} type="text" />
-        {/* пока закомментировал собственный компонент MyInput, т.к. чтобы useRef() не знает куда вставлять данные, нужно ему подсказать куда, пока покажем useRef на стандартном <input>(выше)  */}
-        {/* <MyInput type="text" placeholder="Описание поста"/> */}
+        {/* НЕУПРАВЛЯЕМЫЙ/НЕКОНТРОЛИРУЕМЫЙ СОБСТВЕННЫЙ КОМПОНЕНТ (с помощью useRef) */}
+        <MyInput
+          ref={bodyInputRef} 
+          type="text" 
+          placeholder="Описание поста"
+        />
 
         {/* событие на кнопке */}
         <MyButton onClick={addNewPost}>Создать пост</MyButton>
