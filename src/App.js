@@ -9,46 +9,48 @@ import './styles/App.css';
 
 // по клику по кнопке, в консоле появляется текущее значение (title) из поля input 
 function App() {
-  // состояние (useState) №1 хранит в себе массив posts для списка
-  // массив постов.
+  //! состояние (useState) №1 хранить все посты, и метод setPosts, 
+  // который добавляет в массив "posts" данные, введенные  с полей "MyInput" 
   const [posts, setPosts] = useState([
-    // значение(я) по-умолчанию
+    // значение(я) массива posts по-умолчанию
     {id: 1, title: 'JavaScript 1', body: 'Description'},
     {id: 2, title: 'JavaScript 2', body: 'Description'},
     {id: 3, title: 'JavaScript 3', body: 'Description'},
   ])
   
-  // состояние №2 хранит в себе значение по-умолчанию (''), которое в поле input 
+  //! состояние №2 для первого MyInput (заголовок)  
   const [title, setTitle] = useState('');
+  //! состояние №3 для второго MyInput (описание)  
+  const [body, setBody] = useState('');
 
-  //! хук useRef() - которая дает ссылку на нужный элемент. Не забывать про import useRef (выше)
-  //! 2. Для этого, в нужном элементе нужно добавить атрибут ref={bodyInpuRef} 
-  //! 3. bodyInpuRef.carrent - харнит сам элемент, и если нужно можно взять атрибут bodyInpuRef.current.value
-  const bodyInputRef = useRef();
+ 
 
   // обработчик события (добавить пост):
-  const addNewPost = (e) => { // можно как стрелочную, так и декларативную  функцию (function F() {}) - не важно  
-    e.preventDefault() // сброс действия браузера на событие (отправки (кнопка отпавить или Enter) данных в форме)? которые были по-умолчанию у браузера
-    console.log(title);
-    //!чтобы получить элемент нужно обратится к свойству "current"
-    console.log(bodyInputRef.current);
-    //! либо, чтобы получить любой атрибут элемента - обратится к соответствующему свойству объекта "current"
-    console.log(bodyInputRef.current.value);
+  const addNewPost = (e) => { 
+    e.preventDefault() // сброс действия браузера по умолчанию
+    //!  создаем объект с новыми данными
+    const newPost = {
+      id: Date.now(),
+      title,
+      body
+    };
+    //! добавляем к уже существующим данным - новые 
+    setPosts([...posts, newPost]);
   }
 
   return (
     <div className="App">
       <form>
-        {/* УПРАВЛЯЕМЫЙ КОМПОНЕНТ (Controlled Components)*/}
+        {/* УПРАВЛЯЕМЫЕ КОМПОНЕНТЫ */}
         <MyInput
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           type="text" 
           placeholder="Заголовок поста"
         />
-        {/* НЕУПРАВЛЯЕМЫЙ/НЕКОНТРОЛИРУЕМЫЙ СОБСТВЕННЫЙ КОМПОНЕНТ (с помощью useRef) */}
         <MyInput
-          ref={bodyInputRef} 
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           type="text" 
           placeholder="Описание поста"
         />
@@ -62,4 +64,3 @@ function App() {
 }
 
 export default App;
-//
