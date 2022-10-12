@@ -7,10 +7,8 @@ import MyInput from './components/UI/input/MyInput';
 
 import './styles/App.css';
 
-// по клику по кнопке, в консоле появляется текущее значение (title) из поля input 
 function App() {
-  // состояние (useState) №1 хранить все посты, и метод setPosts, 
-  // который добавляет в массив "posts" данные, введенные  с полей "MyInput" 
+//состояние в котором, объект с ключами / значениями, котороые ПО-УМОЛЧАНИЮ (чтобы отобразить пример списка постов)
   const [posts, setPosts] = useState([
     // значение(я) массива posts по-умолчанию
     {id: 1, title: 'JavaScript 1', body: 'Description'},
@@ -18,28 +16,29 @@ function App() {
     {id: 3, title: 'JavaScript 3', body: 'Description'},
   ])
   
-  // состояние №2 для первого MyInput (заголовок)  
-  const [title, setTitle] = useState('');
-  // состояние №3 для второго MyInput (описание)  
-  const [body, setBody] = useState('');
-
+//! Вместо нескольких состояний, ...
+  // const [title, setTitle] = useState('');
+  // const [body, setBody] = useState('');
+//! ... создадим одно, в котором будет объект со множеством ключ/значений 
+// состояние которое добавляет пост из полей <MyInput />
+const [post, getPost] = useState({ title: '', body: ''});
  
 
   // обработчик события (добавить пост):
   const addNewPost = (e) => { 
     e.preventDefault() // сброс действия браузера по умолчанию
-    // создаем объект с новыми данными
-    const newPost = {
-      id: Date.now(),
-      title,
-      body
-    };
-    // добавляем к уже существующим данным - новые 
-    setPosts([...posts, newPost]);
-    //! обнуляем (устанавливаем пустые строки) текущие значения title и body, 
-    //! чтобы поля input были пустыми
-    setTitle('');
-    setBody('');
+    //! newPost уже не нужен, ...
+    // const newPost = {
+    //   id: Date.now(),
+    //   title: post.title,
+    //   body: post.body,
+    // };
+    // добавляем к уже существующим данным (...posts) - новые (newPost)
+    //! вместо него просто ДОБАВИМ ОБЪЕКТ к старым (...post,) новые Date.now()   - остальные новые данные в MyInput (onChange)
+    setPosts([...posts, {...post, id: Date.now()}]);
+    // обнуляем (устанавливаем пустые строки) текущие значения в объекте post: title и body, 
+    // чтобы поля input были пустыми
+    getPost({ title: '', body: ''});
   }
 
   return (
@@ -47,18 +46,19 @@ function App() {
       <form>
         {/* УПРАВЛЯЕМЫЕ КОМПОНЕНТЫ */}
         <MyInput
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={post.title}
+          //! это называется деструктуризация объекта: https://learn.javascript.ru/destructuring-assignment#ostatok-obekta
+          //! -------------getPost({...старые данные, новые}) 
+          onChange={(e) => getPost({...post, title: e.target.value})}
           type="text" 
           placeholder="Заголовок поста"
         />
         <MyInput
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
+          value={post.body}
+          onChange={(e) => getPost({...post, body: e.target.value})}
           type="text" 
           placeholder="Описание поста"
         />
-
         {/* событие на кнопке */}
         <MyButton onClick={addNewPost}>Создать пост</MyButton>
       </form>

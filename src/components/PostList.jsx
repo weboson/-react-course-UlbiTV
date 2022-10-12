@@ -7,7 +7,7 @@ const PostList = ({posts, title}) => { // так как props - это объе�
         <div>
             <h1 style={{ textAlign: 'center' }}>{title}</h1>
             {
-                                                                           // number для нумерации поста  
+            // number для нумерации поста. Если просто index, то будет начинаться с "0", ведь массив с "0"  
                 posts.map((post, index) => <PostItem post={post} key={post.id} number={index+1}/>)
             }
         </div>
