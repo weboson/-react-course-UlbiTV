@@ -27,11 +27,14 @@ const removePost = (post) => {
   return (
     <div className="App">
       <PostForm create={createPost}/>
-      {/*//! - МОЁ РЕШЕНИЕ: отрисовка по условию (Conditional Rendering) */}
-      {/*//! условие если нет постов, то надпись "Постов не найдено."  */}
-      { (posts.length) ? 
-      <PostList posts={posts} title="Посты про javaScript" remove={removePost}/> :
-      <h1 style={{ textAlign: 'center' }}>Постов не найдено.</h1>
+      {/*//! - РЕШЕНИЕ автора (Ulbi TV): отрисовка по условию (Conditional Rendering) */}
+      { posts.length
+        ? 
+        <PostList posts={posts} title="Посты про javaScript" remove={removePost}/>
+        : 
+        <h1 style={{ textAlign: 'center' }}>
+          Постов не найдено
+        </h1>
       }
     </div>
   );
