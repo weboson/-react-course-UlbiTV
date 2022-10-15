@@ -19,7 +19,7 @@ const createPost = (newPost) => {
   setPosts([...posts, newPost]);
 };
 
-//! удаление поста (кнопкой) - код автора видео (суть такая же как и у меня, но короче):
+// удаление поста (кнопкой)
 const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
@@ -27,7 +27,12 @@ const removePost = (post) => {
   return (
     <div className="App">
       <PostForm create={createPost}/>
-      <PostList posts={posts} title="Посты про javaScript" remove={removePost}/>
+      {/*//! - МОЁ РЕШЕНИЕ: отрисовка по условию (Conditional Rendering) */}
+      {/*//! условие если нет постов, то надпись "Постов не найдено."  */}
+      { (posts.length) ? 
+      <PostList posts={posts} title="Посты про javaScript" remove={removePost}/> :
+      <h1 style={{ textAlign: 'center' }}>Постов не найдено.</h1>
+      }
     </div>
   );
 }
