@@ -19,21 +19,9 @@ const createPost = (newPost) => {
   setPosts([...posts, newPost]);
 };
 
-//! удаление поста (кнопкой) - самостоятельный код:
-const removePost = (id) => {
-  //! отфильтровать массив posts
-  //! уже имеющее состояние нельзя изменять напрямую, нужно сначала сделать копию
-  const copy = [...posts]
-  const result = copy.filter((item, index, array) => {
-    // если true - элемент добавляется к результату, и перебор продолжается
-    // возвращается пустой массив в случае, если ничего не найдено
-    //! вернуть все элменты массива posts, которые НЕ равны переданному аргументу id (из PostItem.jsx)
-    //! который мы передали из PostItem.jsx при нажатии на кнопку "удалить"
-    return item.id !== id;
-  });
-  //! и только так изменять состояние
-  setPosts(result);
-  console.log(result)
+//! удаление поста (кнопкой) - код автора видео (суть такая же как и у меня, но короче):
+const removePost = (post) => {
+  setPosts(posts.filter((item) => item.id !== post.id))
 }
 
   return (

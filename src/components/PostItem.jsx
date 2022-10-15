@@ -2,14 +2,7 @@ import React from 'react';
 import MyButton from './UI/button/MyButton';
 
 // разбил деструктуризацией props = {remove, ...и оастльное в rest}
-const PostItem = ({remove, ...props}) => {
-
-//! метод удаления для кнопки "удалить"
-const deletePost = (e) => {
-    e.preventDefault() // сброс действия браузера по умолчанию
-//! передаю поле id (объекта post)
-    remove(props.post.id)
-}
+const PostItem = (props) => {
 
     return (
         <div>
@@ -22,7 +15,7 @@ const deletePost = (e) => {
                 </div>
                 <div className="post__btns">
                     {/*//! кнопка удаления, при клике => обработчик deletePost */}
-                    <MyButton onClick={deletePost}>Удалить</MyButton>
+                    <MyButton onClick={() => props.remove(props.post)}>Удалить</MyButton>
                 </div>
             </div>
         </div>
