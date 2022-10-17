@@ -2,6 +2,7 @@ import React from 'react';
 import {useState} from 'react';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
+import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 
 function App() {
@@ -27,7 +28,18 @@ const removePost = (post) => {
   return (
     <div className="App">
       <PostForm create={createPost}/>
-      {/*//! - РЕШЕНИЕ автора (Ulbi TV): отрисовка по условию (Conditional Rendering) */}
+      {/* style={} - это локальные стили */}
+      <hr style={{margin: '15px 0'}}/> 
+      <div>
+        {/*//! добавил MySelect.jsx */}
+        <MySelect 
+          defaultValue="Cортировка:"
+          options={[
+            {value: "title", name: "По названию"}, 
+            {value: "body", name: "По описанию"}
+          ]}
+        />
+      </div>
       { posts.length
         ? 
         <PostList posts={posts} title="Посты про javaScript" remove={removePost}/>
