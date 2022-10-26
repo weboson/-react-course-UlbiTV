@@ -2,7 +2,6 @@ import React from 'react';
 
 // в option, чтобы она была не активна, прописываем атрибут "disabled", либо disabled={true} - без разницы
 // также для option нужны ключи key={options.value}
-//! onChange - обработчик
 const MySelect = ({options, defaultValue, value, onChange}) => {
     return (
         <select 
