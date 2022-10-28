@@ -21,7 +21,7 @@ function App() {
     {id: 4, title: 'C-JavaScript 3', body: 'D-Description'},
   ])
 
-//2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
+//!2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
 const [selectedSort, setSelectedSort] = useState('');
 //3 состояние для поиска (Myinput) (текущее значение )
 const [searchQuery, setSearchQuery] = useState('');
@@ -38,41 +38,25 @@ const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
 
-//! установка текущего значения сортировки select (MySelect)
+// установка текущего значения сортировки select (MySelect)
 const sortPosts = (sort) => {
   setSelectedSort(sort) // назначить текущий выбор (По названию/По описанию)
 }
 
-//! ОТСОРТИРОВАТЬ сам массив постов
-// function getSortedPosts() {
-//   console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
-//   if(selectedSort) {   
-//     return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
-//   }
-//   return posts
-// }
 
-
-//! сохранить массив в константу и передать в компонент PostList для рендера 
-// ОТСОРТИРОВАННЫЙ список постов (будет передан в PostList)
-//так как на прямую мутировать состояние нельзя, сделаем копию массива  [...arr] - используя деструктуризацию
-//чтобы отсортеровать строки используем JS-встроенный метод: https://learn.javascript.ru/array-methods#sort-fn
-//const sortedPosts = getSortedPosts();
-//! Хук useMemo
+//! Хук useMemo - сортирует массива постов
+// аргументы: функция сортировки и зависимости [отсортированный массив, посты]
 const sortedPosts = useMemo(() => {
   // изначально поле MySelect не выбрано/не активно, а пустую строку сортировать методом arr.sort нельзя - будет ошибка, поэтому условие:
   // если в поле что-то введено, то сортируем посты
   console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
-  if(selectedSort) { 
-    
+  if(selectedSort) {  // selectedSort - текущий выбор (value/name == По названию/По описанию)
+    //! сортировка массива постов (с последующим отображением в PostList (ниже)) 
     return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
   }
   // если нет, то рендерим список, в исходном состоянии, как есть:
   return posts
-}, [selectedSort, posts])
-
-//! состояние текущего значения (текста) для textarea
-const [textArea, setTextArea] = useState('') 
+}, [selectedSort, posts]) //! <= зависимости
 
   return (
     <div className="App">
@@ -80,9 +64,6 @@ const [textArea, setTextArea] = useState('')
       {/* style={} - это локальные стили */}
       <hr style={{margin: '15px 0'}}/> 
       <div>
-        {/*//! добавил textarea для эксперимента с useMemo */}
-        <textarea value={textArea} name="" id="" cols="30" rows="10" 
-        onChange={(event) => {setTextArea(event.target.value)}}></textarea>
         {/*//! ПОИСК */}
         {/*  переиспользуя компонент MyInput */}
         <MyInput 
