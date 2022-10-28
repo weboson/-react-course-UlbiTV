@@ -44,20 +44,35 @@ const sortPosts = (sort) => {
 }
 
 //! ОТСОРТИРОВАТЬ сам массив постов
-function getSortedPosts() {
-  if(selectedSort) {   
-    console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
-    return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
-  }
-  return posts
-}
+// function getSortedPosts() {
+//   console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
+//   if(selectedSort) {   
+//     return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+//   }
+//   return posts
+// }
+
 
 //! сохранить массив в константу и передать в компонент PostList для рендера 
 // ОТСОРТИРОВАННЫЙ список постов (будет передан в PostList)
 //так как на прямую мутировать состояние нельзя, сделаем копию массива  [...arr] - используя деструктуризацию
 //чтобы отсортеровать строки используем JS-встроенный метод: https://learn.javascript.ru/array-methods#sort-fn
-const sortedPosts = getSortedPosts();
+//const sortedPosts = getSortedPosts();
+//! Хук useMemo
+const sortedPosts = useMemo(() => {
+  // изначально поле MySelect не выбрано/не активно, а пустую строку сортировать методом arr.sort нельзя - будет ошибка, поэтому условие:
+  // если в поле что-то введено, то сортируем посты
+  console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
+  if(selectedSort) { 
+    
+    return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+  }
+  // если нет, то рендерим список, в исходном состоянии, как есть:
+  return posts
+}, [selectedSort, posts])
 
+//! состояние текущего значения (текста) для textarea
+const [textArea, setTextArea] = useState('') 
 
   return (
     <div className="App">
@@ -65,11 +80,13 @@ const sortedPosts = getSortedPosts();
       {/* style={} - это локальные стили */}
       <hr style={{margin: '15px 0'}}/> 
       <div>
+        {/*//! добавил textarea для эксперимента с useMemo */}
+        <textarea value={textArea} name="" id="" cols="30" rows="10" 
+        onChange={(event) => {setTextArea(event.target.value)}}></textarea>
         {/*//! ПОИСК */}
         {/*  переиспользуя компонент MyInput */}
         <MyInput 
           value={searchQuery}
-          // onChange={(event) => {searchPost(event.target.value)}}
           onChange={(event) => {setSearchQuery(event.target.value)}}
           placeholder="Поиск..."
         />
