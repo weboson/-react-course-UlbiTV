@@ -1,15 +1,16 @@
 import React from 'react';
-import {useState} from 'react';
+//! импортируем useMemo 
+import {useState, useMemo} from 'react';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
 import MyInput from './components/UI/input/MyInput';
 import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 
-
-//! мое решение функции Search, но проблемой, которую озвучил автор “1:13:06”: https://youtu.be/GNrdg3PzpJQ?t=4386 
+//! Search от автора
+//! Решение проблемы в Search от автора “1:13:06”: https://youtu.be/GNrdg3PzpJQ?t=4386 
 // Проблема: чтобы вернуть список постов в исходного сосотояние, придется ОБНОВИТЬ  старницу
-
+// Решение: перестановка структуры кода.
 function App() {
 //состояние в котором, объект с ключами / значениями, котороые ПО-УМОЛЧАНИЮ (чтобы отобразить пример списка постов)
   const [posts, setPosts] = useState([
@@ -22,8 +23,9 @@ function App() {
 
 //2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
 const [selectedSort, setSelectedSort] = useState('');
-//!3 состояние для поиска (Myinput) (текущее значение )
-const [searchQuery, setSearchQuery] = useState('')
+//3 состояние для поиска (Myinput) (текущее значение )
+const [searchQuery, setSearchQuery] = useState('');
+
 
 // обработчик (тема "подъем состояния")
 const createPost = (newPost) => {
@@ -36,23 +38,26 @@ const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
 
-// сортировка массива постов (MySelect)
+//! установка текущего значения сортировки select (MySelect)
 const sortPosts = (sort) => {
-  setSelectedSort(sort) // текущий выбор (По названию/По описанию)
-  // console.log(sort)
-  //отсортируем массив постов - воспользуемся состоянием setPosts
-  //так как на прямую мутировать состояние нельзя, сделаем копию массива  [...arr] - используя деструктуризацию
-  //чтобы отсортеровать строки используем JS-встроенный метод: https://learn.javascript.ru/array-methods#sort-fn
-  setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort]) )) 
+  setSelectedSort(sort) // назначить текущий выбор (По названию/По описанию)
 }
 
-//! Поиск (MyInput)
-const searchPost = (search) => {
-  //console.log(search);
-  setSearchQuery(search)
-  // фильтруем массив постов по поиску подСТРОКИ в каждом элементе
-  setPosts(posts.filter((item) => item.title.includes(search))); 
+//! ОТСОРТИРОВАТЬ сам массив постов
+function getSortedPosts() {
+  if(selectedSort) {   
+    console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
+    return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+  }
+  return posts
 }
+
+//! сохранить массив в константу и передать в компонент PostList для рендера 
+// ОТСОРТИРОВАННЫЙ список постов (будет передан в PostList)
+//так как на прямую мутировать состояние нельзя, сделаем копию массива  [...arr] - используя деструктуризацию
+//чтобы отсортеровать строки используем JS-встроенный метод: https://learn.javascript.ru/array-methods#sort-fn
+const sortedPosts = getSortedPosts();
+
 
   return (
     <div className="App">
@@ -64,8 +69,9 @@ const searchPost = (search) => {
         {/*  переиспользуя компонент MyInput */}
         <MyInput 
           value={searchQuery}
+          // onChange={(event) => {searchPost(event.target.value)}}
+          onChange={(event) => {setSearchQuery(event.target.value)}}
           placeholder="Поиск..."
-          onChange={(event) => {searchPost(event.target.value)}}
         />
         <MySelect 
           value= {selectedSort}
@@ -79,7 +85,7 @@ const searchPost = (search) => {
       </div>
       { posts.length
         ? 
-        <PostList posts={posts} title="Посты про javaScript" remove={removePost}/>
+        <PostList posts={sortedPosts} title="Посты про javaScript" remove={removePost}/>
         : 
         <h1 style={{ textAlign: 'center' }}>
           Постов не найдено
