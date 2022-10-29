@@ -8,9 +8,8 @@ import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 
 //! Search от автора
-//! Решение проблемы в Search от автора “1:13:06”: https://youtu.be/GNrdg3PzpJQ?t=4386 
-// Проблема: чтобы вернуть список постов в исходного сосотояние, придется ОБНОВИТЬ  старницу
-// Решение: перестановка структуры кода.
+//! UseMemo 1:15:15 : https://www.youtube.com/watch?v=GNrdg3PzpJQ&t=4517s
+// Решение проблемы в Search от автора “1:13:06”: https://youtu.be/GNrdg3PzpJQ?t=4386 
 function App() {
 //состояние в котором, объект с ключами / значениями, котороые ПО-УМОЛЧАНИЮ (чтобы отобразить пример списка постов)
   const [posts, setPosts] = useState([
@@ -21,7 +20,7 @@ function App() {
     {id: 4, title: 'C-JavaScript 3', body: 'D-Description'},
   ])
 
-//!2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
+//2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
 const [selectedSort, setSelectedSort] = useState('');
 //3 состояние для поиска (Myinput) (текущее значение )
 const [searchQuery, setSearchQuery] = useState('');
