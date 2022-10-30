@@ -1,5 +1,4 @@
 import React from 'react';
-//! импортируем useMemo 
 import {useState, useMemo} from 'react';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
@@ -7,9 +6,7 @@ import MyInput from './components/UI/input/MyInput';
 import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 
-//! Search от автора
-//! UseMemo 1:15:15 : https://www.youtube.com/watch?v=GNrdg3PzpJQ&t=4517s
-// Решение проблемы в Search от автора “1:13:06”: https://youtu.be/GNrdg3PzpJQ?t=4386 
+//! Search (от автора)
 function App() {
 //состояние в котором, объект с ключами / значениями, котороые ПО-УМОЛЧАНИЮ (чтобы отобразить пример списка постов)
   const [posts, setPosts] = useState([
@@ -22,7 +19,7 @@ function App() {
 
 //2 состояние для сортировки (MySelect) (запоминать для ренедера текущего выбора)
 const [selectedSort, setSelectedSort] = useState('');
-//3 состояние для поиска (Myinput) (текущее значение )
+//!3 состояние для поиска (Myinput) (текущее значение )
 const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -37,13 +34,12 @@ const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
 
-// установка текущего значения сортировки select (MySelect)
+// установка текущего значения сортировки для select (MySelect)
 const sortPosts = (sort) => {
   setSelectedSort(sort) // назначить текущий выбор (По названию/По описанию)
 }
 
-
-//! Хук useMemo - сортирует массива постов
+//! useMemo для выдачи отсортированного массива постов
 // аргументы: функция сортировки и зависимости [отсортированный массив, посты]
 const sortedPosts = useMemo(() => {
   // изначально поле MySelect не выбрано/не активно, а пустую строку сортировать методом arr.sort нельзя - будет ошибка, поэтому условие:
@@ -52,10 +48,18 @@ const sortedPosts = useMemo(() => {
   if(selectedSort) {  // selectedSort - текущий выбор (value/name == По названию/По описанию)
     //! сортировка массива постов (с последующим отображением в PostList (ниже)) 
     return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
-  }
+  } 
   // если нет, то рендерим список, в исходном состоянии, как есть:
   return posts
 }, [selectedSort, posts]) //! <= зависимости
+
+//! ПОИСК (выводит массив, как отсортированный, так и, как результат поиска)
+// также запишем в useMemo - чтобы не запускалась функция поиска, каждый раз, при любом рендере
+const sortedAndSearchedPosts = useMemo(() => {
+  // Методы toLowerCase() и toUpperCase() меняют регистр символов:
+  return sortedPosts.filter((post) => post.title.toLowerCase().includes(searchQuery))
+}, [searchQuery, sortedPosts]) //! <= зависимости: значение в посковой строке, отсортерованный список постов
+
 
   return (
     <div className="App">
@@ -80,9 +84,9 @@ const sortedPosts = useMemo(() => {
           ]}
         />
       </div>
-      { posts.length
+      { sortedAndSearchedPosts.length
         ? 
-        <PostList posts={sortedPosts} title="Посты про javaScript" remove={removePost}/>
+        <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
         : 
         <h1 style={{ textAlign: 'center' }}>
           Постов не найдено
