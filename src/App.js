@@ -7,10 +7,10 @@ import MyButton from './components/UI/button/MyButton';
 import MyModal from './components/UI/myModal/MyModal';
 import './styles/App.css';
 
-//! модальное окно:
+// модальное окно:
 // открывается при нажатие на кнопку "Создать новый пост" (modal==true)
-// при нажатии на кнопку в модальном окне "Создать пост" - модальное окно зарывается (madal==false)
-// при клике на темный фон (CSS-класс .myModal) - модально окно зарывается (modal==false)
+// при нажатии на кнопку в модальном окне "Создать пост" - модальное окно закрывается (madal==false)
+// при клике на темный фон (CSS-класс .myModal) - модальное окно закрывается (modal==false)
 
 function App() {
   const [posts, setPosts] = useState([
@@ -36,7 +36,7 @@ const removePost = (post) => {
 }
 
 
-// отсортерованный массив постов
+// отсортированный массив постов
 const sortedPosts = useMemo(() => {
   console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
   if(filter.sort) {  
