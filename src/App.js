@@ -5,6 +5,8 @@ import PostForm from './components/PostForm';
 import PostList from './components/PostList';
 import MyButton from './components/UI/button/MyButton';
 import MyModal from './components/UI/myModal/MyModal';
+//! КАСТОМНЫЙ ХУК
+import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
 
 // модальное окно:
@@ -21,13 +23,21 @@ function App() {
   ])
 
 const [filter, setFilter] = useState({sort: '', query: ''})
-//! состояние модального окна == false
+// состояние модального окна == false
 const [modal, setModal] = useState(false);
+
+//! КАСТОМНЫЙ ХУК (usePosts.jsx):
+const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+// это как обычный модуль, в котором функции, которые связаны цепью вызовов (друг друга вызывают)
+// методом декомпозиции импортируем нужную функцию: {usePosts}
+// и передаем этой функции, пропсы: usePosts(posts, filter.sort, filter.query);
+// а внутри модуля функция принимая все нужные пропсы, вызывает другого: useSortedPosts(posts, sort)
+
 
 
 const createPost = (newPost) => {
   setPosts([...posts, newPost]);
-  // ! Скрыть модальное окно, после созднания поста
+  // Скрыть модальное окно, после создания поста
   setModal(false);
 };
 
@@ -35,35 +45,24 @@ const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
 
-
-// отсортированный массив постов
-const sortedPosts = useMemo(() => {
-  console.log('ОТРАБОТАЛА ФУНКЦИЯ getSortedPosts')  
-  if(filter.sort) {  
-    return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-  } 
-  return posts
-}, [filter.sort, posts])
-
-// ПОИСК 
-const sortedAndSearchedPosts = useMemo(() => {
-  // Методы toLowerCase() и toUpperCase() меняют регистр символов:
-  return sortedPosts.filter((post) => post.title.toLowerCase().includes(filter.query))
-}, [filter.query, sortedPosts]) // <= зависимости: значение в посковой строке, отсортерованный список постов
-
+// логика сортировки и фильтрации (поиск)
+//! метод сортировки постов "sortedPosts" - перенесен в useSortedPosts (хук usePosts.jsx)
+//! метод фильтрации (поиск) "sortedAndSearchedPosts" - перенесен в sortedAndSearchedPosts (хук usePosts.jsx)
+// sortedAndSearchedPosts запускает sortedPosts, и потом отсортированный массив уже фильтрует (поиск)
 
   return (
     <div className="App">
-      {/*//! Кнопка чтобы показать модальное окно */}
+      {/*// Кнопка чтобы показать модальное окно */}
       <MyButton style={{marginTop: "20px"}} onClick={()=>setModal(true)}>
           Создать новый пост
       </MyButton>
-      {/* //! Модальное окно */}
+      {/* // Модальное окно */}
       <MyModal visible={modal} setVisible={setModal}>
         <PostForm create={createPost}/>
       </MyModal>
       {/* style={} - это локальные стили */}
       <hr style={{margin: '15px 0'}}/> 
+      {/* select, search */}
       <PostFilter filter={filter} setFilter={setFilter} />
       <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
     </div>
