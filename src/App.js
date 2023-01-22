@@ -5,9 +5,11 @@ import PostForm from './components/PostForm';
 import PostList from './components/PostList';
 import MyButton from './components/UI/button/MyButton';
 import MyModal from './components/UI/myModal/MyModal';
-//! КАСТОМНЫЙ ХУК
-import { usePosts } from './hooks/usePosts';
+
+import { usePosts } from './hooks/usePosts'; // КАСТОМНЫЙ ХУК
 import './styles/App.css';
+//! пакет AXIOS (заменитель fetch, т.к. короче писать код) для работы с запросами на сервер
+import axios from 'axios'; // так будет ошибка (дикомпозицией {}): ... {axios} from ...
 
 // модальное окно:
 // открывается при нажатие на кнопку "Создать новый пост" (modal==true)
@@ -26,14 +28,13 @@ const [filter, setFilter] = useState({sort: '', query: ''})
 // состояние модального окна == false
 const [modal, setModal] = useState(false);
 
-//! КАСТОМНЫЙ ХУК (usePosts.jsx):
+// КАСТОМНЫЙ ХУК (usePosts.jsx) - генерирует список, а <PostList /> их рендерить:
 const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-// это как обычный модуль, в котором функции, которые связаны цепью вызовов (друг друга вызывают)
-// методом декомпозиции импортируем нужную функцию: {usePosts}
-// и передаем этой функции, пропсы: usePosts(posts, filter.sort, filter.query);
-// а внутри модуля функция принимая все нужные пропсы, вызывает другого: useSortedPosts(posts, sort)
-
-
+// это как обычный модуль (файл), в котором одна или несколько (чаще) хуков (функции), которые могут быть связаны цепью вызовов (друг друга вызывают)
+// методом декомпозиции импортируем нужный хук[ки](функцию): {usePosts}
+// и передаем этой функции (хуку), пропсы: usePosts(posts, filter.sort, filter.query);
+// в нашем случае, внутри модуля функция принимая все нужные пропсы, вызывает другого с частью пропсами: useSortedPosts(posts, sort)
+// используется: <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
 
 const createPost = (newPost) => {
   setPosts([...posts, newPost]);
@@ -41,17 +42,33 @@ const createPost = (newPost) => {
   setModal(false);
 };
 
+//! СЕРВЕР (запросы/храненние данных) 
+// (тайкод видео 1:36:25, страница 95 в документе)
+//! Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
+//! с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
+async function fetchPosts() {
+  // выше импортировали Axios
+  const response = await axios.get('https://jsonplaceholder.typicode.com/posts'); // url взяли из "JSONPlaceholder": https://jsonplaceholder.typicode.com/guide/
+  // console.log(response.data)
+  setPosts(response.data) // структура данных схожа, возвращае данные это массив объектов, типа: [{id, title, body}, ...]
+}
+
 const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
 }
 
-// логика сортировки и фильтрации (поиск)
-//! метод сортировки постов "sortedPosts" - перенесен в useSortedPosts (хук usePosts.jsx)
-//! метод фильтрации (поиск) "sortedAndSearchedPosts" - перенесен в sortedAndSearchedPosts (хук usePosts.jsx)
+// логика сортировки (select) и фильтрации (поиск)
+// метод сортировки постов "sortedPosts" - перенесен в хук useSortedPosts (файл usePosts.jsx)
+// метод фильтрации (поиск) "sortedAndSearchedPosts" - перенесен в хук sortedAndSearchedPosts (файл usePosts.jsx)
 // sortedAndSearchedPosts запускает sortedPosts, и потом отсортированный массив уже фильтрует (поиск)
 
   return (
     <div className="App">
+      {/*//! Кнопка чтобы запросить->рендерить полученный список данных с сервера*/}
+      {/*//! список рендерится один раз, повторного нет, так как React одни и те же данные не обновляет, сохраняя оптиминизвацию */}
+      {/*//! пример: если удалить какою-нибудь статью, то кнопка обновит div список - васстоновив удаленную статью */}
+      <button onClick={fetchPosts}>GET POSTS</button>
+
       {/*// Кнопка чтобы показать модальное окно */}
       <MyButton style={{marginTop: "20px"}} onClick={()=>setModal(true)}>
           Создать новый пост
