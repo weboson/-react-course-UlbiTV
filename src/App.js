@@ -8,8 +8,10 @@ import MyModal from './components/UI/myModal/MyModal';
 
 import { usePosts } from './hooks/usePosts'; // КАСТОМНЫЙ ХУК
 import './styles/App.css';
-//! пакет AXIOS (заменитель fetch, т.к. короче писать код) для работы с запросами на сервер
+// пакет AXIOS (заменитель fetch, т.к. короче писать код) для работы с запросами на сервер
 import axios from 'axios'; // так будет ошибка (дикомпозицией {}): ... {axios} from ...
+//! хук useEffect
+import { useEffect } from 'react';
 
 // модальное окно:
 // открывается при нажатие на кнопку "Создать новый пост" (modal==true)
@@ -42,16 +44,28 @@ const createPost = (newPost) => {
   setModal(false);
 };
 
-//! СЕРВЕР (запросы/храненние данных) 
+// СЕРВЕР (запросы/храненние данных) 
 // (тайкод видео 1:36:25, страница 95 в документе)
-//! Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
-//! с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
-async function fetchPosts() {
+// Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
+// с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
+async function fetchPosts() { 
   // выше импортировали Axios
   const response = await axios.get('https://jsonplaceholder.typicode.com/posts'); // url взяли из "JSONPlaceholder": https://jsonplaceholder.typicode.com/guide/
   // console.log(response.data)
   setPosts(response.data) // структура данных схожа, возвращае данные это массив объектов, типа: [{id, title, body}, ...]
 }
+
+//!-----useEffect---------
+//! теперь вместо кнопки, запрос на сервер происходит при первом рендере (единожды - т.к. массив пустой)
+//! хук useEffect - с колбеком запросов на сервер JSONPlaceholder, используя вместо fetch - библиотеку axios
+// так как useEffect ничего не возращает (в отличии от useMemo), то обходимся без переменной
+useEffect(
+  //! колбэк вызывает наш метод запроса
+  () => { fetchPosts();}
+  ,
+  []
+)
+
 
 const removePost = (post) => {
   setPosts(posts.filter((item) => item.id !== post.id))
@@ -64,10 +78,6 @@ const removePost = (post) => {
 
   return (
     <div className="App">
-      {/*//! Кнопка чтобы запросить->рендерить полученный список данных с сервера*/}
-      {/*//! список рендерится один раз, повторного нет, так как React одни и те же данные не обновляет, сохраняя оптиминизвацию */}
-      {/*//! пример: если удалить какою-нибудь статью, то кнопка обновит div список - васстоновив удаленную статью */}
-      <button onClick={fetchPosts}>GET POSTS</button>
 
       {/*// Кнопка чтобы показать модальное окно */}
       <MyButton style={{marginTop: "20px"}} onClick={()=>setModal(true)}>
