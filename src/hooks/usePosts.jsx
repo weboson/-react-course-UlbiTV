@@ -10,7 +10,7 @@ export const useSortedPosts = (posts, sort) => { // sort
     //! вкладываем старый метод внутрь каст-хука:
     // отсортированный массив постов
     const sortedPosts = useMemo(() => { 
-        console.log('ОТРАБОТАЛА ФУНКЦИЯ sortedPosts из usePosts.jsx')
+        //console.log('ОТРАБОТАЛА ФУНКЦИЯ sortedPosts из usePosts.jsx')
         if (sort) { // sort - это опция: title или body (компонент myFilter - mySelect)
             return [...posts].sort((a, b) => a[sort].localeCompare(b[sort]))
         }
@@ -30,7 +30,7 @@ export const usePosts = (posts, sort, query) => {
     const sortedPosts = useSortedPosts(posts, sort); //! вызов функции (хука) useSortedPosts
 
     const sortedAndSearchedPosts = useMemo(() => {
-        console.log('ОТРАБОТАЛА ФУНКЦИЯ поиска usePosts из usePosts.jsx')
+        //console.log('ОТРАБОТАЛА ФУНКЦИЯ поиска usePosts из usePosts.jsx')
         return sortedPosts.filter((post) => post.title.toLowerCase().includes(query)) // Методы toLowerCase() и toUpperCase() меняют регистр символов
     }, [query, sortedPosts]) // <= зависимости: значение в поисковой  строке, отсортированный  список постов
 
