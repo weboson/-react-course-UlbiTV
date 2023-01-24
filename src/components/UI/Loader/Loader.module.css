@@ -1,0 +1,21 @@
+/*! индикатор загрузки (кружочек) */
+/* фигура (пунктирная окружность */
+.loader {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /*закругленные углы*/
+    border: 5px dashed teal; /*dached - пунктирный */
+    /* указываем класс анимации, длительность, линейную */
+    animation: rotate 1.3s infinite linear;
+}
+
+/* анимация вращения индикатора */
+/* ключевые кадры анимации, с помощью "@keyframes" */
+@keyframes rotate { /*rotate - вращать, scale - масштаб */
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+    to {
+        transform: rotate(360deg) scale(1.4);
+    }
+}

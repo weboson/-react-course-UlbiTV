@@ -12,6 +12,8 @@ import './styles/App.css';
 import { useEffect } from 'react';
 // наш API - метод запроса списка постов с сервера
 import PostService from './API/PostService'
+//! компонент индикатора (кружочек)
+import Loader from './components/UI/Loader/Loader';
 
 
 function App() {
@@ -111,7 +113,7 @@ function App() {
       {/* //! УСЛОВИЕ индикации - если isPostsLoading == true, то индикатор появляется, если false - размонтируетсяы */}
       {
         isPostsLoading
-          ? <h1 style={{display: 'flex', justifyContent: 'center'}}>Загрузка данных...</h1>
+          ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader /></div>  //! компонент индикатора (кружочек)
           : <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost} />
       }
 
