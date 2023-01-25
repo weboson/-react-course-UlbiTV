@@ -12,16 +12,19 @@ import './styles/App.css';
 import { useEffect } from 'react';
 // наш API - метод запроса списка постов с сервера
 import PostService from './API/PostService'
-//! компонент индикатора (кружочек)
+// компонент индикатора (кружочек)
 import Loader from './components/UI/Loader/Loader';
+//! кастомный хук логики запросов на сервер:
+import { useFetching } from './hooks/useFetching';
+
 
 
 function App() {
   const [posts, setPosts] = useState([
-    { id: 1, title: 'testSearch A-JavaScript 1', body: 'B-Description' },
-    { id: 2, title: 'B-JavaScript 2', body: 'C-Description' },
-    { id: 3, title: 'D-JavaScript 3', body: 'A-Description' },
-    { id: 4, title: 'C-JavaScript 3', body: 'D-Description' },
+    // { id: 1, title: 'testSearch A-JavaScript 1', body: 'B-Description' },
+    // { id: 2, title: 'B-JavaScript 2', body: 'C-Description' },
+    // { id: 3, title: 'D-JavaScript 3', body: 'A-Description' },
+    // { id: 4, title: 'C-JavaScript 3', body: 'D-Description' },
   ])
 
   const [filter, setFilter] = useState({ sort: '', query: '' })
@@ -33,8 +36,10 @@ function App() {
   // состояние модального окна == false
   const [modal, setModal] = useState(false);
 
-  //! состояние: Индикация загрузки (прелоадер)
-  const [isPostsLoading, setIsPostsLoading] = useState(false); //! по-умолчанию false (не показывать)
+
+  //! перенес логику в useFetching.jsx
+  //! можно удалять:
+  // const [isPostsLoading, setIsPostsLoading] = useState(false); // по-умолчанию false (не показывать)
 
   //* КАСТОМНЫЙ ХУК (usePosts.jsx) - генерирует список, а <PostList /> их рендерить:
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
@@ -43,6 +48,23 @@ function App() {
   // и передаем этой функции (хуку), пропсы: usePosts(posts, filter.sort, filter.query);
   // в нашем случае, внутри модуля функция принимая все нужные пропсы, вызывает другого с частью пропсами: useSortedPosts(posts, sort)
   // используется: <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
+  
+  
+  
+  //* СЕРВЕР (запросы/храненние данных) 
+  // (тайкод видео 1:36:25, страница 95 в документе)
+  // Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
+  // с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
+  //! кастомных хук запросов на сервер + колбэк с нашим запросом и установкой постов
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => { 
+    //! вставленный фрагмент из старого метода fetchPosts
+    //  --сам axios-запрос на сервер перенесли в API--
+    const posts = await PostService.getAll() // обязательно await, а то posts не становиться массивом и все методы массивов выдают ошибку
+    // в состояние setPosts() -  устананвливается полученный массив постов
+    setPosts(posts) // структура данных схожа, возвращае данные это массив объектов, типа: [{id, title, body}, ...]
+    //!--------------------- 
+  })
+
 
   // создать пост через кнопку "создать новый пост"
   const createPost = (newPost) => {
@@ -51,27 +73,7 @@ function App() {
     setModal(false);
   };
 
-  //* СЕРВЕР (запросы/храненние данных) 
-  // (тайкод видео 1:36:25, страница 95 в документе)
-  // Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
-  // с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
-  async function fetchPosts() {
-    //! значение состояния индикатора загрузки - по умолчанию false
-    //! перед загрузкой данных - true 
-    setIsPostsLoading(true)
-    //! искуственно задержим загрузку данных, чтобы увидеть индикатор
-    setTimeout(async () => {
 
-      //  --сам axios-запрос на сервер перенесли в API--
-      const posts = await PostService.getAll() // обязательно await, а то posts не становиться массивом и все методы массивов выдают ошибку
-      // в состояние setPosts() -  устананвливается полученный массив постов
-      setPosts(posts) // структура данных схожа, возвращае данные это массив объектов, типа: [{id, title, body}, ...]
-      //! после загрузки данных - false 
-      setIsPostsLoading(false)
-
-    }, 1000)
-
-  }
 
   //* useEffect---------
   // запрос на сервер происходит при первом рендере (единожды - т.к. массив пустой)
@@ -79,7 +81,7 @@ function App() {
   // так как useEffect ничего не возращает (в отличии от useMemo), то обходимся без переменной
   useEffect(
     // колбэк вызывает наш метод запроса
-    () => { fetchPosts(); }
+    () => { fetchPosts(); } //! метод запроса
     ,
     []
   )
@@ -109,11 +111,22 @@ function App() {
       <hr style={{ margin: '15px 0' }} />
       {/* select, search */}
       <PostFilter filter={filter} setFilter={setFilter} />
-      {/* //! индикатор загрузки (загрузки с сервера) */}
-      {/* //! УСЛОВИЕ индикации - если isPostsLoading == true, то индикатор появляется, если false - размонтируетсяы */}
+
+
+      
+      {/*//! обработчик ошибки: если в PostService.js подпортить url запроса, то спровоцируется ошибка */}
+      {/*// «&&» находит первое ложное значение.*/} 
+      {/*То есть, если postError (true), то пойдет дальше и покажет сообщение */}
+      {/*// подробнее: https://learn.javascript.ru/logical-operators#i-nahodit-pervoe-lozhnoeznachenie */}
+      {
+        postError && 
+        <h1>Произошла ошибка ${postError}</h1>
+      }
+      {/* // индикатор загрузки (загрузки с сервера) */}
+      {/* // УСЛОВИЕ индикации - если isPostsLoading == true, то индикатор появляется, если false - размонтируетсяы */}
       {
         isPostsLoading
-          ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader /></div>  //! компонент индикатора (кружочек)
+          ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}><Loader /></div>  // компонент индикатора (кружочек)
           : <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost} />
       }
 
