@@ -11,10 +11,10 @@ export const useFetching = (callback) => { //! callback - это ЛЮБОЙ ЗА
     const [error, setError] = useState(''); // состояние ошибки - по-умолчанию пустая строка ''
 
     // метод (лигическая конструкция), которую можно переиспользовать, где угодно
-    const fetching = async () => {
+    const fetching = async (...args) => { //! переношу в колбек для запроса, чтобы не было эффект задержки в постах: Pagination. Solution #2 (limit, page, ...args)
         try {
             setIsLoading(true); // показать индикатор загрузки
-            await callback(); //! сам запрос на сервер
+            await callback(...args); //! сам запрос на сервер
         } catch (e) { // e - объект ошибки
             setError(e.message); // установить "сообщение" ошибки
         } finally {

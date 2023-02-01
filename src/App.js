@@ -63,7 +63,7 @@ function App() {
   // Для работы с сервером "JSONPlaceholder"(fake API for testing ) 
   // с помощью библиотеки AXIOS (заменитель стандартного метода fetch())
   // кастомных хук запросов на сервер + колбэк с нашим запросом и установкой постов
-  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
     // вставленный фрагмент из прошлого метода fetchPosts
     //  --сам axios-запрос на сервер перенесли в API--
     //! page - получен из установленного в кнопках setPage 
@@ -95,9 +95,9 @@ function App() {
   // так как useEffect ничего не возращает (в отличии от useMemo), то обходимся без переменной
   useEffect(
     // колбэк вызывает наш метод запроса
-    () => { fetchPosts(); } // метод запроса
+    () => { fetchPosts(limit, page); } // метод запроса
     ,
-    [page] //! зависимость, чтобы запрос происходил от изминения состояние "page" (в changePage)
+    [] 
   )
 
   //* удаление поста по кнопке "Удалить"
@@ -109,8 +109,7 @@ function App() {
   //! и формирование соответствующего запроса"fetchPosts" 
   const changePage = (page) => {
     setPage(page); // "текущая страница" [page, setPage] (App.js)
-    // получают данные со старого запроса - решение добавить зависимсоть page в useEffect()
-    // fetchPosts(); // шаблон для запроса (в try...catch) из каст.хука useFetching.jsx 
+    fetchPosts(limit, page); // шаблон для запроса (в try...catch) из каст.хука useFetching.jsx 
   }
 
   //* логика сортировки (select) и фильтрации (поиск)
