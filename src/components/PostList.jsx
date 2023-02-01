@@ -29,7 +29,7 @@ const PostList = ({ posts, title, remove }) => { // так как props - это
                             timeout={500}
                             classNames="post">
 
-                            <PostItem post={post} key={post.id} number={index + 1} index={index} remove={remove} />
+                            <PostItem post={post} key={post.id} id={post.id} index={index} remove={remove} />
                         </CSSTransition>
                     )
                     )
