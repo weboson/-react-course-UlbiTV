@@ -10,14 +10,16 @@ import { usePosts } from './hooks/usePosts'; // КАСТОМНЫЙ ХУК
 import './styles/App.css';
 // хук useEffect
 import { useEffect } from 'react';
-//! наш API - метод запроса списка постов с сервера
+// наш API - метод запроса списка постов с сервера
 import PostService from './API/PostService'
 // компонент индикатора (кружочек)
 import Loader from './components/UI/Loader/Loader';
-//! кастомный хук логики (try...catch {callback}) запросов на сервер:
+// кастомный хук логики (try...catch {callback}) запросов на сервер:
 import { useFetching } from './hooks/useFetching';
-//! расчет страниц (аналитика) и массива парядковых чисел для кнопок
+// расчет страниц (аналитика) и массива парядковых чисел для кнопок
 import { getPageCount, getPagesArray } from './utils/pages';
+//! компонент пагинации
+import Pagination from './components/Pagination/Pagination';
 
 
 
@@ -54,8 +56,7 @@ function App() {
   // в нашем случае, внутри модуля функция принимая все нужные пропсы, вызывает другого с частью пропсами: useSortedPosts(posts, sort)
   // используется: <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
 
-  //! массив порядковых чисел (основываясь на общем количестве страниц "getPageCount") для кнопок:
-  let pagesArray = getPagesArray(totalPages); // getPagesArray(10)
+
 
 
   //* СЕРВЕР (запросы/храненние данных) 
@@ -150,21 +151,9 @@ function App() {
           ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}><Loader /></div>  // компонент индикатора (кружочек)
           : <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost} />
       }
-      <div className='page__wrapper'>
-        {
-          pagesArray.map((p) =>
-            <span
-            //! устанавливаем в состояние текущей страницы  = в текущий номер массива (кнопки) и вызов постов
-            // changePage() => { setPage(page) и fetchPosts() }
-              onClick={() => {changePage(p)} } // аргумент 'p' из колбэка. То есть, так "(p)=>changePage(p)" - не работает.
-              key={p}
-            //! получаем page от установленного текущее setPage и сравниваем с текущим элементом из массива (кнопок)
-              className={page === p ? 'page page__current' : 'page'}>
-              {p}
-            </span>
-          )
-        }
-      </div>
+
+      {/*//! ПАГИНАЦИЯ  */}
+      <Pagination totalPages={totalPages} page={page} changePage={changePage} />
     </div>
   );
 }
