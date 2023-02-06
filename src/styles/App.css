@@ -8,7 +8,8 @@
 /* стили для #root из index.html */
 #root {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* стили для .App из App.jsx */
@@ -51,7 +52,7 @@
   
 
 
-  /*! стили для "кнопок" нумерации страниц (<span>)  */
+  /* стили для "кнопок" нумерации страниц (<span>)  */
   .page__wrapper {
     margin-top: 30px;
     display: flex;
@@ -63,8 +64,28 @@
     cursor: pointer;
   }
 
-/*! текущая (активная) кнопка-страница */
+/* текущая (активная) кнопка-страница */
   .page__current {
     border: 2px solid orange;
     font-weight: bold;
   }
+
+
+/* //! меню навигации */
+.navbar {
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  background: lightgray;
+}
+
+.navbar__links {
+  margin-left: auto;
+}
+
+/* класс стилей активной ссылки навигации */
+.styleBlue {
+  color: blue;
+}
