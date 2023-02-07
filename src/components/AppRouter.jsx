@@ -4,17 +4,23 @@ import Posts from '../pages/Posts'; //! cтраница posts
 import Error from '../pages/Error'; //! cтраница error
 //! РОУТИНГ (многостраничное приложение) 
 import { Route, Routes } from 'react-router-dom';
+import PostIdPage from '../pages/PostIdPage';
 const AppRouter = () => {
     return (
         <Routes>
             <Route
-                exact path="about" //! путь можно, как '/about', так и без слеша
+                path="about" //! путь можно, как '/about', так и без слеша
                 element={<About />}
                 errorElement={<Posts />} // если компонент в About будет ошибка, то страница Posts (как работает не понял, все ошибки About вылетают в react )
             />
             <Route
-                exact path="posts"
+                exact path="posts" //! exact#1 - для того, чтобы router, воспринимал указаннаые url, как РАЗНЫЕ
                 element={<Posts />}
+
+            />
+            <Route //! динамический путь (:id) к определенному посту
+                exact path="posts/:id" //! exact#2
+                element={<PostIdPage />}
 
             />
             <Route
