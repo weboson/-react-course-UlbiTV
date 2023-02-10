@@ -32,7 +32,7 @@ const Navbar = () => {
                         isActive ? activeClassName : undefined
                     }
                 >
-                    Tasks
+                    Posts
                 </NavLink>
             </div>
         </div>
