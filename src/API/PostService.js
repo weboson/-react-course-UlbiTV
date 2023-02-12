@@ -28,4 +28,11 @@ export default class PostService {
             //return response.data // раньше передовали сразу данные, теперь тело отвтева полностью с headers в то числе
             return response;
     }
+
+    //! для ОДНОГО ПОСТА (PostIdPage.jsx)
+    static async getById(id) { // id - из useParams() (PostIdPage.jsx)
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts/' + id);
+        return response;
+    }
+
 }

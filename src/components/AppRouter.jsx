@@ -18,7 +18,7 @@ const AppRouter = () => {
                 element={<Posts />}
 
             />
-            <Route //! динамический путь (:id) к определенному посту
+            <Route //! динамический путь (:id) к определенному посту - имя id может быть любым, главное после :
                 exact path="posts/:id" //! exact#2
                 element={<PostIdPage />}
 

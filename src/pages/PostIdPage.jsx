@@ -1,57 +1,54 @@
+// ! компонент - старница одного поста
 import React from 'react';
-//  Хук useParams - возвращает объект пар ключ/значение динамических параметров из текущего URL-адреса, 
+
+//!  Хук useParams - возвращает объект пар ключ/значение динамических параметров из текущего URL-адреса, 
 //  которые были сопоставлены <Route path>. 
 //  Дочерние маршруты наследуют все параметры родительских маршрутов.
 // Подробнее: https://reactrouter.com/en/main/hooks/use-params
 import { useParams } from 'react-router-dom';
+//! для получения метода axios - запроса (getById)
+import PostService from '../API/PostService'
+//! шаблон с try...catch с вызовом колбека, в котором вызов axios-запроса (PostService.jsx)
+import { useFetching } from '../hooks/useFetching';
 
-import axios from 'axios'; // так будет ошибка (дикомпозицией {}): ... {axios} from ...
-// import PostService from '../API/PostService'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useFetching } from '../hooks/useFetching';
-// пока использовал шаблон поста из PostItem - где кнопки не действительны
-import PostItem from '../components/PostItem';
-
+// индикатор загрузки
+import Loader from '../components/UI/Loader/Loader';
 
 
 const PostIdPage = () => {
-    //? МОИ варинат
-    //console.log(window.location.href); //http://localhost:3000/posts/1
-    // вариант автора (хук от react-router-dom):
-    const idPost = useParams(); 
-    // console.log(idPost) // объект {id : "1"}
-    // console.log(idPost.id) // 1 (параметр: id из URL)
 
-
-    //! состояние: один пост:
-    const [post, setPost] = useState(''
-       // { id: 1, title: 'Пост по-умолчанию (заглушка)', body: 'Пост по-умолчанию Пост по-умолчанию' },
-    )
-    //console.log(post)
-
-
-    //! кастомных хук, функция шаблона запроса на сервер (файл useFetching.jsx):
-    const [fetching, isPostLoading, postError] = useFetching(async () => {
-        const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${idPost.id}`); // url взяли из "JSONPlaceholder": https://jsonplaceholder.typicode.com/guide/
+    //! -- useParams -- 
+    const params = useParams(); 
+    //console.log(params) // объект {id : "1"} - id - это любое имя, после : внутри тегах <Route exact path="posts/:id" element={<PostIdPage />}
+    //console.log(params.id) // 1 (параметр: id из URL)
     
-    setPost(response.data)
-    //setPost({ id: 3, title: 'testSearch A-JavaScript 1', body: 'B-Description bodybodybodybodybodybodybody' })
-    console.log(response.data)
+    //! состояние: один пост:
+    const [post, setPost] = useState({}
+        // { id: 1, title: 'Пост по-умолчанию (заглушка)', body: 'Пост по-умолчанию Пост по-умолчанию' },
+        )
+
+   //! кастомных хук useFetching.jsx, функция шаблона с try...catch для axios-запроса (PostService.getById()) на сервер (файл useFetching.jsx):
+    const [fetchPostId, isLoading, error] = useFetching( async (id) => {
+        const response = await PostService.getById(id);
+        setPost(response.data)
     })
 
     //useEffect - НЕ должен ничего возращать (иначе ошибка), так будет ошибка () => fetching()
-    useEffect(
-        () => {fetching()} 
-        ,
-        [] 
-      )
+    useEffect(() => {
+        fetchPostId(params.id);
+    }, [])
 
     return (
         <div>
-            <h1>Страница одного поста</h1>
-            {/*//! пока использовал шаблон поста из PostItem - где кнопки не действительны*/}
-            <PostItem post={post} key={post.id} id={post.id} index={post.id} remove={post.id}/>
+            <h1>Вы открыли страницу поста с ID = {params.id}</h1>
+            {isLoading
+                ? <Loader />
+                : <div><h2>{post.id}. {post.title}</h2><p>{post.body}</p></div>
+                
+            
+            }
         </div>
     );
 };
