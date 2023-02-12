@@ -5,7 +5,10 @@ import axios from 'axios'; // так будет ошибка (дикомпози
 
 
 export default class PostService {
-    // try ... catch перенсли в useFetching.jsx 
+
+    // try ... catch в useFetching.jsx 
+
+    //!метод№1: запрос на порцию постов на каждую страницу (Posts.jsx)
     // статичный (PostService.getAll), асинхронный метод
     static async getAll(limit = 10, page = 1) { 
         // чтобы сгенерировать ошибку, нужно "подпортить" url: например
@@ -29,10 +32,16 @@ export default class PostService {
             return response;
     }
 
-    //! для ОДНОГО ПОСТА (PostIdPage.jsx)
+    //!метод№2: для ОДНОГО ПОСТА (PostIdPage.jsx)
     static async getById(id) { // id - из useParams() (PostIdPage.jsx)
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts/' + id);
         return response;
     }
+
+    //!метод№3: для КОММЕНТАРИЙ к одному посту (PostIdPage.jsx)
+        static async getCommentsByPostId(id) { // id - из useParams() (PostIdPage.jsx)
+            const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}/comments`);
+            return response;
+        }
 
 }
