@@ -16,6 +16,15 @@ const Navbar = () => {
     return (
         <div className='navbar'>
             <div className="navbar__links">
+                <NavLink
+                    to="/"
+                    className={({ isActive }) => //! className
+                        isActive ? activeClassName : undefined
+                    }
+                >
+                    Home
+                </NavLink>
+                
                 {/* //! если страница текущая, то ссылка на неё подсвечивается нашими стилями: style */}
                 <NavLink
                     to="about"
