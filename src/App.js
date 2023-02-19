@@ -1,40 +1,45 @@
 import React from 'react';
-// import { useState, useMemo } from 'react';
-// import PostFilter from './components/PostFilter';
-// import PostForm from './components/PostForm';
-// import PostList from './components/PostList';
-// import MyButton from './components/UI/button/MyButton';
-// import MyModal from './components/UI/myModal/MyModal';
-
-// import { usePosts } from './hooks/usePosts'; // КАСТОМНЫЙ ХУК
 import './styles/App.css';
-// // хук useEffect
-// import { useEffect } from 'react';
-// // наш API - метод запроса списка постов с сервера
-// import PostService from './API/PostService'
-// // компонент индикатора (кружочек)
-// import Loader from './components/UI/Loader/Loader';
-// // кастомный хук логики (try...catch {callback}) запросов на сервер:
-// import { useFetching } from './hooks/useFetching';
-// // расчет страниц (аналитика) и массива парядковых чисел для кнопок
-// import { getPageCount, getPagesArray } from './utils/pages';
-// // компонент пагинации
-// import Pagination from './components/Pagination/Pagination';
 //! РОУТИНГ (многостраничное приложение) 
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-
 import Navbar from './components/UI/navBar/Navbar';
 import AppRouter from './components/AppRouter';
 
-
+//! Контекст: https://ru.reactjs.org/docs/context.html
+import { AuthContext } from './context';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 function App() {
+  //console.log(AuthContext); 
+  //console.log(AuthContext.Provider); 
+  //! состояние аутентификации (login) 
+  const [isAuth, setIsAuth] = useState(false)
+
+  //! сохраним значение контекста (false/true) в localStorage, чтобы при обнолении страницы данные не сбрасывались до по-умолчанию (false)
+  useEffect(() => {
+    //! localStorage - хранилище объектов данных ('key', 'value')
+    // auth в аргументе это просто имя объекта данных, который мы установили в Login.jsx (localStorage.setItem())
+    if (localStorage.getItem('auth')) { // получить по ключу 'auth'
+      setIsAuth(true);
+    } //else { // так как false у нас по-умолчанию, значит else не нужен
+      //setIsAuth()
+    //}
+  }) 
+
 
   return (
-    <BrowserRouter>
-      <Navbar/>
-      <AppRouter/>
-    </BrowserRouter>
+    //! оборачиваем в контекст наше приложение (указаных маршрутах), с помощью Provider и его пропа value={}
+    <AuthContext.Provider value={{
+      isAuth, // сокращенный вид записи {isAuth: isAuth,...
+      setIsAuth // сокращенный вид записи ...setIsAuth: setIsAuth(),}
+      }}>
+      <BrowserRouter>
+        <Navbar />
+        <AppRouter />
+      </BrowserRouter>
+    </AuthContext.Provider>
+
   )
 }
 
