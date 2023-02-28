@@ -21,6 +21,7 @@ import { getPageCount, getPagesArray } from '../utils/pages';
 // компонент пагинации
 import Pagination from '../components/Pagination/Pagination';
 import { useObserver } from '../hooks/useObserver';
+import MySelect from '../components/UI/select/MySelect';
 
 
 
@@ -115,7 +116,7 @@ useObserver(
     // колбэк вызывает наш метод запроса
     () => { fetchPosts(limit, page); } // метод запроса
     ,
-    [page] // текущая страница
+    [page, limit] // текущая страница //! добавили в зависимости limit, чтобы выбрать количество постов в загруженной порции
   )
 
   //* удаление поста по кнопке "Удалить"
@@ -150,7 +151,19 @@ useObserver(
       {/* select, search */}
       <PostFilter filter={filter} setFilter={setFilter} />
 
-
+      {/* //! выбор количество подгружаемых постов */}
+      <MySelect
+        value={limit}
+        onChange={value => setLimit(value)}
+        defaultValue="Количество постов на странице"
+        options={[
+          {value: 1, name: '1'},
+          {value: 5, name: '5'},
+          {value: 10, name: '10'},
+          {value: 25, name: '25'},
+          {value: -1, name: 'All'}, //! если указать в запросе -1, то вернутся все посты: https://jsonplaceholder.typicode.com/posts?_limit=-1
+        ]}
+      />
 
       {/*// обработчик ошибки: если в PostService.js подпортить url запроса, то спровоцируется ошибка */}
       {/*// «&&» находит первое ложное значение.*/}
