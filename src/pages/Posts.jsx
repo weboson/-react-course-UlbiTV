@@ -20,6 +20,7 @@ import { useFetching } from '../hooks/useFetching';
 import { getPageCount, getPagesArray } from '../utils/pages';
 // компонент пагинации
 import Pagination from '../components/Pagination/Pagination';
+import { useObserver } from '../hooks/useObserver';
 
 
 
@@ -44,7 +45,7 @@ function Posts() {
   const [totalPages, setTotalPages] = useState(0); //по-умолчанию ноль страниц, т.к. мы не знаем сразу скольок их
   // состояние параметра лимита постов (limit) 
   const [limit, setLimit] = useState(10); // - по-умолчанию 10
-  // состояние параметра текущей страницы (page) - устанваливается в кнопках
+  // состояние параметра текущей страницы (page) - устанавливается  в кнопках (в будущем будет автоподгрузка)
   const [page, setPage] = useState(1); // - по-умолчанию первая страница (1) 
 
 
@@ -56,11 +57,11 @@ function Posts() {
   // в нашем случае, внутри модуля функция принимая все нужные пропсы, вызывает другого с частью пропсами: useSortedPosts(posts, sort)
   // используется: <PostList posts={sortedAndSearchedPosts} title="Посты про javaScript" remove={removePost}/>
 
-  //! ссылка на последний (целевой) элемент в списке постов (для бесконечной ленты):
+  //! ссылка на последний (целевой) элемент в списке постов (для бесконечной ленты) - передается в useObserver.jsx:
   const lastElement = useRef();
   // console.log(lastElement);
   //! useRef.current - используется для хранения Observer 
-  const observer = useRef();
+  //const observer = useRef(); //!перенсен в кастомный хук useObserver.jsx
 
 
 
@@ -85,34 +86,17 @@ function Posts() {
     setTotalPages(getPageCount(totalCount, limit)); // setTotalPages(getPageCount(100, 10)) => setTotalPages(10)
   })
 
-  //! useEffect с Observer:
-  useEffect(() => {
-    //! опции нам не нужны, ведь root по-умолчанию - видимое окно браузера, это нам и нужно
-    // var options = {
-    //   root: document.querySelector('#scrollArea'), // наблюдатель (по-умолчанию видимое окно браузера)
-    //   rootMargin: '0px', // отступы
-    //   threshold: 1.0 // процент пересечения целевого элемента
-    // }
-    //! колбэк,который запуститься (подгружает порцию постов) при пересечении границы целевого элемента
-    if (isPostsLoading) return; // если индикатор = true, то выход 
-    if (observer.current) observer.current.disconnect(); // удалять наблюдение за элементом
-    var callback = function (entries, observer) { //! entries - это массив целевых элементов (в нашем случае это только div)
-      if(entries[0].isIntersecting && page < totalPages) { //! isIntersecting - возвращает true/false в зависимости  в зоне видимости ли целевой элемент или нет
-        //console.log(entries);
-        console.log(page);
-        setPage(page + 1); //! увеличим текущую страницу, чтобы была соответствующая подгрузка постов
-        //console.log('DIV В ЗОНЕ ВИДИМОСТИ');
-      } 
-    };
-    // options нам не нужны
-    // var observer = new IntersectionObserver(callback, options);
-    //! объявление наблюдателя 
-    observer.current = new IntersectionObserver(callback); // (сохраним в useref)
-    
-    //! объявление целевого элемента
-    observer.current.observe(lastElement.current); // current это поле useRef
-    //console.log(observer.current);
-  }, [isPostsLoading]); //! зависимость 
+//! кастомный хук для "бесконечной ленты" (observer)
+//useEffect в кастомном хуке
+//useObserver = (ref, canLoad, isLoading, callback)
+// состояние setPage - это связь, 
+// чтобы на основе изменнения setPage(page+1) меняется в useEffect({fetchPosts(limit, page)}, [page];  
+useObserver(
+  lastElement, // целевой элемент (на ком повесили референс useRef())
+  page < totalPages,  // ограничитель загрузки постов
+  isPostsLoading, // 
+  () => { setPage(page + 1);} 
+  )
 
   // создать пост через кнопку "создать новый пост"
   const createPost = (newPost) => {
