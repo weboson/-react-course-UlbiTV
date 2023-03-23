@@ -1,3 +1,33 @@
+Screen Shots of the Application:
+1. page: Posts (list)
+![posts_page](https://user-images.githubusercontent.com/42917939/227174712-ebaeadb2-a1ac-4d40-904d-568bc67ecb5a.png)
+
+2. page: post (one post)
+![post_page](https://user-images.githubusercontent.com/42917939/227176474-5b51afc5-c3a9-4abc-a68a-c3fca534d439.png)
+
+3. page: adding post (modal)
+![adding_post](https://user-images.githubusercontent.com/42917939/227175591-737f02f9-acf0-4bf5-ae1e-97620b4f3959.png)
+
+4. page: login (true/false)
+![login_page](https://user-images.githubusercontent.com/42917939/227175895-c4468c8c-e4e4-48fd-bf35-b6c53d849312.png)
+
+5. page: home
+![home_page](https://user-images.githubusercontent.com/42917939/227176643-31cc5f24-ba99-44bf-a4ed-ad06f073b57f.png)
+
+6. page: about (about us)
+![aboutus_page](https://user-images.githubusercontent.com/42917939/227176798-e97aa2e4-7faf-4ede-b51e-2d62cc9ff179.png)
+
+Stack and technologies:
+1. React (create-react-app)
+2. React-Hooks, custom-hooks
+3. React-router-dom
+4. Axios
+5. react-transition-group
+6. https://jsonplaceholder.typicode.com/posts
+... etc.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
